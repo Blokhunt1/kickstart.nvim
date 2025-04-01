@@ -118,6 +118,12 @@ vim.schedule(function()
   vim.opt.clipboard = 'unnamedplus'
 end)
 
+-- Enable relative line numbers
+vim.opt.relativenumber = true
+
+-- Also show the absolute number on the current line
+vim.opt.number = true
+
 -- Enable break indent
 vim.opt.breakindent = true
 
@@ -697,6 +703,8 @@ require('lazy').setup({
           },
         },
       }
+	  
+	  
 
       -- Ensure the servers and tools above are installed
       --
