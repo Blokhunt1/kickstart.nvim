@@ -206,6 +206,54 @@ vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper win
 -- vim.keymap.set("n", "<C-S-j>", "<C-w>J", { desc = "Move window to the lower" })
 -- vim.keymap.set("n", "<C-S-k>", "<C-w>K", { desc = "Move window to the upper" })
 
+-- user own created functions
+vim.api.nvim_create_user_command('NeoTreeBuildC', function()
+  -- Get the path of the current Neo-tree node
+  local state = require('neo-tree.sources.manager').get_state 'filesystem'
+  local node = state.tree:get_node()
+
+  if not node or not node.path then
+    vim.notify('No file selected in Neo-tree', vim.log.levels.WARN)
+    return
+  end
+
+  local file = node.path
+  if file:match '%.c$' then
+    local output = file:gsub('%.c$', '')
+    local cmd = string.format('gcc "%s" -o "%s"', file, output)
+    vim.notify('Compiling ' .. file, vim.log.levels.INFO)
+
+    local status = os.execute(cmd)
+    if status == 0 then
+      vim.notify('Running ' .. output, vim.log.levels.INFO)
+      vim.cmd('split | terminal "' .. output .. '"')
+    else
+      vim.notify('Compilation failed', vim.log.levels.ERROR)
+    end
+  end
+
+  if file:match '%.py$' then
+    local cmd = string.format('python "%s"', file)
+    vim.notify('Running ', vim.log.levels.INFO)
+    vim.cmd('split | terminal ' .. cmd)
+  end
+end, {})
+
+-- Start file with system assigned FTA
+vim.api.nvim_create_user_command('NeoTreeOpenDefaultApp', function()
+  local state = require('neo-tree.sources.manager').get_state 'filesystem'
+  local node = state.tree:get_node()
+  local path = node.path
+
+  if vim.fn.has 'win32' == 1 or vim.fn.has 'win64' == 1 then
+    -- Use Windows "start" command to open with default app
+    vim.fn.jobstart({ 'cmd', '/C', 'start', '', path }, { detach = true })
+    vim.notify('Opening ' .. path .. ' with default application', vim.log.levels.INFO)
+  else
+    vim.notify('This command is Windows-specific', vim.log.levels.WARN)
+  end
+end, {})
+
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
 
@@ -675,9 +723,14 @@ require('lazy').setup({
       --  - settings (table): Override the default settings passed when initializing the server.
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
       local servers = {
-        -- clangd = {},
+        clangd = {},
         -- gopls = {},
-        -- pyright = {},
+        pyright = {},
+        jsonls = {},
+        powershell_es = {},
+        dockerls = {},
+        cmake = {},
+
         -- rust_analyzer = {},
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
         --
@@ -703,8 +756,6 @@ require('lazy').setup({
           },
         },
       }
-	  
-	  
 
       -- Ensure the servers and tools above are installed
       --
@@ -998,10 +1049,10 @@ require('lazy').setup({
   --  Here are some example plugins that I've included in the Kickstart repository.
   --  Uncomment any of the lines below to enable them (you will need to restart nvim).
   --
-  -- require 'kickstart.plugins.debug',
-  -- require 'kickstart.plugins.indent_line',
-  -- require 'kickstart.plugins.lint',
-  -- require 'kickstart.plugins.autopairs',
+  require 'kickstart.plugins.debug',
+  require 'kickstart.plugins.indent_line',
+  require 'kickstart.plugins.lint',
+  require 'kickstart.plugins.autopairs',
   require 'kickstart.plugins.neo-tree',
   -- require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
 

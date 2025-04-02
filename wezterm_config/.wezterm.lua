@@ -1,5 +1,5 @@
 -- Pull in the wezterm API
-local wezterm = require("wezterm")
+local wezterm = require 'wezterm'
 
 -- This will hold the configuration.
 local config = wezterm.config_builder()
@@ -9,12 +9,20 @@ config.initial_rows = 42
 config.initial_cols = 150
 
 -- Spawn a fish shell in login mode
-config.default_prog = { "powershell.exe" }
+config.default_prog = { 'powershell.exe' }
 
-config.default_cwd = "C:/myfiles"
+config.default_cwd = 'C:/myfiles'
+
+-- inside your wezterm.lua
+config.launch_menu = {
+  {
+    label = 'Admin PowerShell',
+    args = { 'powershell', '-NoExit', '-Command', 'Start-Process powershell -Verb runAs' },
+  },
+}
 
 -- For example, changing the color scheme:
-config.color_scheme = "AdventureTime"
+config.color_scheme = 'AdventureTime'
 
 -- and finally, return the configuration to wezterm
 return config

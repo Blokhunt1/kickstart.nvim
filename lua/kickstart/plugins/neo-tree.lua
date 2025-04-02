@@ -300,6 +300,8 @@ return {
               ['D'] = 'fuzzy_finder_directory',
               ['#'] = 'fuzzy_sorter', -- fuzzy sorting using the fzy algorithm
               -- ["D"] = "fuzzy_sorter_directory",
+              ['<F5>'] = 'build_c_file',
+              ['O'] = 'open_in_default_app',
               ['f'] = 'filter_on_submit',
               ['<c-x>'] = 'clear_filter',
               ['[g'] = 'prev_git_modified',
@@ -328,7 +330,14 @@ return {
             },
           },
 
-          commands = {}, -- Add a custom command or override a global one using the same function name
+          commands = {
+            build_c_file = function(state)
+              vim.cmd 'NeoTreeBuildC'
+            end,
+            open_in_default_app = function(state)
+              vim.cmd 'NeoTreeOpenDefaultApp'
+            end,
+          }, -- Add a custom command or override a global one using the same function name
         },
         buffers = {
           follow_current_file = {
