@@ -206,6 +206,21 @@ vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper win
 -- vim.keymap.set("n", "<C-S-j>", "<C-w>J", { desc = "Move window to the lower" })
 -- vim.keymap.set("n", "<C-S-k>", "<C-w>K", { desc = "Move window to the upper" })
 
+if vim.fn.argc() == 0 then
+  vim.api.nvim_create_autocmd('VimEnter', {
+    callback = function()
+      vim.cmd ':Neotree show left'
+
+      vim.schedule(function()
+        local bufnr = vim.fn.bufnr '%'
+        if vim.api.nvim_buf_get_name(bufnr) == '' then
+          vim.cmd('bdelete ' .. bufnr)
+        end
+      end)
+    end,
+  })
+end
+
 -- user own created functions
 vim.api.nvim_create_user_command('NeoTreeBuildC', function()
   -- Get the path of the current Neo-tree node
