@@ -76,6 +76,16 @@ return {
       end,
       desc = 'Debug: See last session result.',
     },
+    {
+      'n',
+      '<leader>de',
+      function()
+        require('dap').terminate()
+        require('dapui').close()
+        require('dap').clear_breakpoints()
+      end,
+      desc = 'End DAP session',
+    },
   },
   config = function()
     local dap = require 'dap'
@@ -95,6 +105,8 @@ return {
       ensure_installed = {
         -- Update this to ensure that you have the debuggers for the langs you want
         'delve',
+        'codelldb',
+        'bashls',
       },
     }
 

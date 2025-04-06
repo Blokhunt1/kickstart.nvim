@@ -232,16 +232,36 @@ vim.api.nvim_create_user_command('NeoTreeBuildC', function()
     return
   end
 
+  -- Convert backslashes for Windows + MinGW compatibility
   local file = node.path
+
+  -- Detect WSL and convert path to Linux-style
+  local is_wsl = vim.fn.has 'wsl' == 1
+  if is_wsl then
+    -- Convert Windows path to WSL-compatible path
+    file = file:gsub('\\', '/') -- C:\path → C:/path
+    file = file:gsub('^([A-Za-z]):', '/mnt/%1') -- C:/path → /mnt/c/path
+    file = file:lower() -- Ensure drive letter is lowercase
+  end
+
   if file:match '%.c$' then
     local output = file:gsub('%.c$', '')
-    local cmd = string.format('gcc "%s" -o "%s"', file, output)
+    if vim.loop.os_uname().sysname == 'Windows_NT' then
+      output = output .. '.exe'
+    elseif is_wsl then
+      output = output .. '.o'
+    end
+
+    cmd = string.format('gcc -g "%s" -o "%s"', file, output)
     vim.notify('Compiling ' .. file, vim.log.levels.INFO)
+    vim.notify('Command: ' .. cmd, vim.log.levels.DEBUG)
 
     local status = os.execute(cmd)
+
     if status == 0 then
       vim.notify('Running ' .. output, vim.log.levels.INFO)
-      vim.cmd('split | terminal "' .. output .. '"')
+      local run_cmd = is_wsl and output or ('./' .. output)
+      vim.cmd('split | terminal ' .. run_cmd)
     else
       vim.notify('Compilation failed', vim.log.levels.ERROR)
     end
@@ -263,9 +283,32 @@ vim.api.nvim_create_user_command('NeoTreeOpenDefaultApp', function()
   if vim.fn.has 'win32' == 1 or vim.fn.has 'win64' == 1 then
     -- Use Windows "start" command to open with default app
     vim.fn.jobstart({ 'cmd', '/C', 'start', '', path }, { detach = true })
-    vim.notify('Opening ' .. path .. ' with default application', vim.log.levels.INFO)
+    vim.notify('(Win) Opening' .. path .. ' with default application', vim.log.levels.INFO)
+  elseif vim.fn.has 'linux' == 1 then
+    -- Use standard app in linux
+    vim.fn.jobstart({ 'bash', path }, {
+      stdout_buffered = true,
+      on_stdout = function(_, data)
+        for _, line in ipairs(data) do
+          if line ~= '' then
+            vim.notify('Script output: ' .. line, vim.log.levels.INFO)
+          end
+        end
+      end,
+      on_stderr = function(_, data)
+        for _, line in ipairs(data) do
+          if line ~= '' then
+            vim.notify('Script error: ' .. line, vim.log.levels.ERROR)
+          end
+        end
+      end,
+      on_exit = function(_, code)
+        vim.notify('Script exited with code ' .. code, vim.log.levels.INFO)
+      end,
+    })
+    vim.notify('(linux) Opening ' .. path .. ' with default application', vim.log.levels.INFO)
   else
-    vim.notify('This command is Windows-specific', vim.log.levels.WARN)
+    vim.notify('Failed to open with standard app', vim.log.levels.WARN)
   end
 end, {})
 
@@ -739,6 +782,7 @@ require('lazy').setup({
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
       local servers = {
         clangd = {},
+        bashls = {},
         -- gopls = {},
         pyright = {},
         jsonls = {},
