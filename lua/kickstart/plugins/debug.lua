@@ -107,6 +107,7 @@ return {
         'delve',
         'codelldb',
         'bashls',
+        'powershell_es',
       },
     }
 

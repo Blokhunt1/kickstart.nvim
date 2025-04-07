@@ -272,6 +272,12 @@ vim.api.nvim_create_user_command('NeoTreeBuildC', function()
     vim.notify('Running ', vim.log.levels.INFO)
     vim.cmd('split | terminal ' .. cmd)
   end
+
+  if file:match '%.ps1$' then
+    local cmd = string.format('powershell "%s"', file)
+    vim.notify('Running ', vim.log.levels.INFO)
+    vim.cmd('split | terminal ' .. cmd)
+  end
 end, {})
 
 -- Start file with system assigned FTA
