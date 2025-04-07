@@ -1,12 +1,24 @@
 -- Pull in the wezterm API
 local wezterm = require 'wezterm'
+local mux = wezterm.mux
 
 -- This will hold the configuration.
 local config = wezterm.config_builder()
 
+config.font_dirs = {
+  os.getenv 'LOCALAPPDATA' .. '\\nvim\\wezterm_config\\fonts',
+}
+config.font = wezterm.font '0xProto Nerd Font Mono'
 -- This is where you actually apply your config choices
 config.initial_rows = 42
 config.initial_cols = 150
+
+-- Open in full screen
+wezterm.on('gui-startup', function(window)
+  local tab, pane, window = mux.spawn_window(cmd or {})
+  local gui_window = window:gui_window()
+  gui_window:perform_action(wezterm.action.ToggleFullScreen, pane)
+end)
 
 -- Spawn a fish shell in login mode
 config.default_prog = { 'powershell.exe' }
