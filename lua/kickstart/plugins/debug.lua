@@ -77,7 +77,6 @@ return {
       desc = 'Debug: See last session result.',
     },
     {
-      'n',
       '<leader>de',
       function()
         require('dap').terminate()
