@@ -162,6 +162,12 @@ return {
     dap.listeners.after.event_initialized['dapui_config'] = dapui.open
     dap.listeners.before.event_terminated['dapui_config'] = dapui.close
     dap.listeners.before.event_exited['dapui_config'] = dapui.close
+    dap.listeners.before.attach.dapui_config = function()
+      dapui.open()
+    end
+    dap.listeners.before.launch.dapui_config = function()
+      dapui.open()
+    end
 
     -- Install golang specific config
     require('dap-go').setup {
@@ -180,5 +186,7 @@ return {
     require('powershell').setup {
       bundle_path = vim.fn.stdpath 'data' .. '/mason/packages/powershell-editor-services',
     }
+    require('powershell').eval()
+    require('powershell').toggle_term()
   end,
 }
