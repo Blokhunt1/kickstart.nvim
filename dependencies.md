@@ -9,3 +9,5 @@ Wezterm
 5. Chocolately
 6. NPM
 7. Powershell 7
+8. choco install starship
+

@@ -23,6 +23,11 @@ return {
     'theHamsta/nvim-dap-virtual-text',
     -- Add your own debuggers here
     'leoluz/nvim-dap-go',
+    'TheLeoP/powershell.nvim',
+  },
+  ---@type powershell.user_config
+  opts = {
+    bundle_path = vim.fn.stdpath 'data' .. '/mason/packages/powershell-editor-services',
   },
   keys = {
     -- Basic debugging keymaps, feel free to change to your liking!
@@ -155,6 +160,11 @@ return {
         -- See https://github.com/leoluz/nvim-dap-go/blob/main/README.md#configuring
         detached = vim.fn.has 'win32' == 0,
       },
+    }
+
+    -- Setting up the PowerShell adapter provided by nvim-dap-powershell
+    require('powershell').setup {
+      bundle_path = vim.fn.stdpath 'data' .. '/mason/packages/powershell-editor-services',
     }
   end,
 }

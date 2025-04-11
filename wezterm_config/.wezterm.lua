@@ -9,6 +9,55 @@ config.font_dirs = {
   os.getenv 'LOCALAPPDATA' .. '\\nvim\\wezterm_config\\fonts',
 }
 config.font = wezterm.font '0xProto Nerd Font Mono'
+
+config.color_scheme = 'Catppuccin Mocha'
+
+-- Override background to ensure it blends with tab bar
+config.colors = {
+  background = '#1e1e2e', -- Mocha base
+  tab_bar = {
+    background = '#1e1e2e',
+    active_tab = {
+      bg_color = '#89b4fa', -- blue
+      fg_color = '#1e1e2e', -- dark text on bright tab
+    },
+    inactive_tab = {
+      bg_color = '#313244',
+      fg_color = '#cdd6f4',
+    },
+    inactive_tab_hover = {
+      bg_color = '#45475a',
+      fg_color = '#ffffff',
+      italic = true,
+    },
+    new_tab = {
+      bg_color = '#1e1e2e',
+      fg_color = '#89b4fa',
+    },
+  },
+}
+
+config.window_decorations = 'RESIZE' -- or "NONE"
+
+wezterm.on('format-tab-title', function(tab)
+  local pane = tab.active_pane
+  local cwd_uri = pane.current_working_dir
+
+  local cwd = cwd_uri and cwd_uri:match 'file:///[A-Z]:/(.*)' or ''
+  cwd = cwd:gsub('/', '\\')
+
+  return {
+    { Text = '  ' .. cwd },
+  }
+end)
+
+config.window_frame = {
+  font = wezterm.font { family = '0xProto Nerd Font Mono', weight = 'Bold' },
+  font_size = 10.5,
+  active_titlebar_bg = '#1e1e2e', -- match your theme background
+  inactive_titlebar_bg = '#1e1e2e',
+}
+
 -- This is where you actually apply your config choices
 config.initial_rows = 42
 config.initial_cols = 150
@@ -73,8 +122,17 @@ config.keys = {
 
 config.adjust_window_size_when_changing_font_size = false
 
+config.window_padding = {
+  left = 0,
+  right = 0,
+  top = 3,
+  bottom = 0,
+}
+
 -- For example, changing the color scheme:
-config.color_scheme = 'AdventureTime'
+config.color_scheme = 'Catppuccin Mocha' -- or Macchiato, Frappe, Latte
+
+config.tab_bar_at_bottom = true
 
 -- and finally, return the configuration to wezterm
 return config
