@@ -115,6 +115,16 @@ return {
       },
     }
 
+    dap.configurations.ps1 = {
+      {
+        type = 'powershell',
+        name = 'Debug PS1',
+        request = 'launch',
+        script = '${file}',
+        console = 'integratedTerminal', -- forces output to come back
+      },
+    }
+
     -- Dap UI setup
     -- For more information, see |:help nvim-dap-ui|
     dapui.setup {
@@ -162,6 +172,10 @@ return {
       },
     }
 
+    dap.listeners.after.event_output['log-pwsh-output'] = function(_, body)
+      print '⚡ [DAP OUTPUT EVENT]'
+      print(vim.inspect(body))
+    end
     -- Setting up the PowerShell adapter provided by nvim-dap-powershell
     require('powershell').setup {
       bundle_path = vim.fn.stdpath 'data' .. '/mason/packages/powershell-editor-services',

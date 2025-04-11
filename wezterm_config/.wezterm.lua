@@ -37,8 +37,6 @@ config.colors = {
   },
 }
 
-config.window_decorations = 'RESIZE' -- or "NONE"
-
 wezterm.on('format-tab-title', function(tab)
   local pane = tab.active_pane
   local cwd_uri = pane.current_working_dir
@@ -123,8 +121,8 @@ config.keys = {
 config.adjust_window_size_when_changing_font_size = false
 
 config.window_padding = {
-  left = 0,
-  right = 0,
+  left = 3,
+  right = 3,
   top = 3,
   bottom = 0,
 }
