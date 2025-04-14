@@ -23,6 +23,11 @@ return {
     'theHamsta/nvim-dap-virtual-text',
     -- Add your own debuggers here
     'leoluz/nvim-dap-go',
+    'TheLeoP/powershell.nvim',
+  },
+  ---@type powershell.user_config
+  opts = {
+    bundle_path = vim.fn.stdpath 'data' .. '/mason/packages/powershell-editor-services',
   },
   keys = {
     -- Basic debugging keymaps, feel free to change to your liking!
@@ -110,6 +115,16 @@ return {
       },
     }
 
+    dap.configurations.ps1 = {
+      {
+        type = 'powershell',
+        name = 'Debug PS1',
+        request = 'launch',
+        script = '${file}',
+        console = 'integratedTerminal', -- forces output to come back
+      },
+    }
+
     -- Dap UI setup
     -- For more information, see |:help nvim-dap-ui|
     dapui.setup {
@@ -147,6 +162,12 @@ return {
     dap.listeners.after.event_initialized['dapui_config'] = dapui.open
     dap.listeners.before.event_terminated['dapui_config'] = dapui.close
     dap.listeners.before.event_exited['dapui_config'] = dapui.close
+    dap.listeners.before.attach.dapui_config = function()
+      dapui.open()
+    end
+    dap.listeners.before.launch.dapui_config = function()
+      dapui.open()
+    end
 
     -- Install golang specific config
     require('dap-go').setup {
@@ -156,5 +177,16 @@ return {
         detached = vim.fn.has 'win32' == 0,
       },
     }
+
+    dap.listeners.after.event_output['log-pwsh-output'] = function(_, body)
+      print '⚡ [DAP OUTPUT EVENT]'
+      print(vim.inspect(body))
+    end
+    -- Setting up the PowerShell adapter provided by nvim-dap-powershell
+    require('powershell').setup {
+      bundle_path = vim.fn.stdpath 'data' .. '/mason/packages/powershell-editor-services',
+    }
+    require('powershell').eval()
+    require('powershell').toggle_term()
   end,
 }

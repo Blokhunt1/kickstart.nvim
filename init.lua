@@ -816,7 +816,16 @@ require('lazy').setup({
         -- gopls = {},
         pyright = {},
         jsonls = {},
-        powershell_es = {},
+        powershell_es = {
+          settings = {
+            powershell = {
+              analysis = {
+                enable = true,
+              },
+            },
+          },
+        },
+
         dockerls = {},
         cmake = {},
 
