@@ -260,7 +260,31 @@ vim.api.nvim_create_user_command('NeoTreeBuildC', function()
 
     if status == 0 then
       vim.notify('Running ' .. output, vim.log.levels.INFO)
-      local run_cmd = is_wsl and output or ('./' .. output)
+      local run_cmd = is_wsl and output or output
+      vim.cmd('split | terminal ' .. run_cmd)
+    else
+      vim.notify('Compilation failed', vim.log.levels.ERROR)
+    end
+  end
+
+  if file:match '%.cpp$' then
+    local output = file:gsub('%.cpp$', '')
+    if vim.loop.os_uname().sysname == 'Windows_NT' then
+      output = output .. '.exe'
+    elseif is_wsl then
+      output = output .. '.o'
+    end
+
+    -- Compile the C++ file with debugging symbols
+    cmd = string.format('g++ -g "%s" -o "%s"', file, output)
+    vim.notify('Compiling ' .. file, vim.log.levels.INFO)
+    vim.notify('Command: ' .. cmd, vim.log.levels.DEBUG)
+
+    local status = os.execute(cmd)
+
+    if status == 0 then
+      vim.notify('Running ' .. output, vim.log.levels.INFO)
+      local run_cmd = is_wsl and output or output
       vim.cmd('split | terminal ' .. run_cmd)
     else
       vim.notify('Compilation failed', vim.log.levels.ERROR)
