@@ -4,16 +4,16 @@
 return {
   -- If you want neo-tree's file operations to work with LSP (updating imports, etc.), you can use a plugin like
   -- https://github.com/antosha417/nvim-lsp-file-operations:
-  -- {
-  --   "antosha417/nvim-lsp-file-operations",
-  --   dependencies = {
-  --     "nvim-lua/plenary.nvim",
-  --     "nvim-neo-tree/neo-tree.nvim",
-  --   },
-  --   config = function()
-  --     require("lsp-file-operations").setup()
-  --   end,
-  -- },
+  {
+    'antosha417/nvim-lsp-file-operations',
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+      'nvim-neo-tree/neo-tree.nvim',
+    },
+    config = function()
+      require('lsp-file-operations').setup()
+    end,
+  },
   {
     'nvim-neo-tree/neo-tree.nvim',
     branch = 'v3.x',
@@ -53,17 +53,16 @@ return {
     config = function()
       -- If you want icons for diagnostic errors, you'll need to define them somewhere.
       -- In Neovim v0.10+, you can configure them in vim.diagnostic.config(), like:
-      --
-      -- vim.diagnostic.config({
-      --   signs = {
-      --     text = {
-      --       [vim.diagnostic.severity.ERROR] = '',
-      --       [vim.diagnostic.severity.WARN] = '',
-      --       [vim.diagnostic.severity.INFO] = '',
-      --       [vim.diagnostic.severity.HINT] = '󰌵',
-      --     },
-      --   }
-      -- })
+      vim.diagnostic.config {
+        signs = {
+          text = {
+            [vim.diagnostic.severity.ERROR] = '',
+            [vim.diagnostic.severity.WARN] = '',
+            [vim.diagnostic.severity.INFO] = '',
+            [vim.diagnostic.severity.HINT] = '󰌵',
+          },
+        },
+      }
       --
       -- In older versions, you can define the signs manually:
       -- vim.fn.sign_define("DiagnosticSignError", { text = " ", texthl = "DiagnosticSignError" })
@@ -72,7 +71,7 @@ return {
       -- vim.fn.sign_define("DiagnosticSignHint", { text = "󰌵", texthl = "DiagnosticSignHint" })
 
       require('neo-tree').setup {
-        close_if_last_window = false, -- Close Neo-tree if it is the last window left in the tab
+        close_if_last_window = true, -- Close Neo-tree if it is the last window left in the tab
         popup_border_style = 'rounded',
         enable_git_status = true,
         enable_diagnostics = true,

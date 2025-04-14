@@ -304,6 +304,14 @@ vim.api.nvim_create_user_command('NeoTreeBuildC', function()
   end
 end, {})
 
+-- Start powershell as shell in windows instead of bash
+if vim.loop.os_uname().sysname == 'Windows_NT' then
+  vim.opt.shell = 'pwsh' -- or "powershell" if you prefer
+  vim.opt.shellcmdflag = '-NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command'
+  vim.opt.shellquote = ''
+  vim.opt.shellxquote = ''
+end
+
 -- Start file with system assigned FTA
 vim.api.nvim_create_user_command('NeoTreeOpenDefaultApp', function()
   local state = require('neo-tree.sources.manager').get_state 'filesystem'
