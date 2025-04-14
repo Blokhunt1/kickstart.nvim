@@ -9,9 +9,24 @@ return {
         markdown = { 'markdownlint' },
         yaml = { 'yamllint' },
         html = { 'htmlhint' },
-        pyhton = { 'flake8' },
+        python = { 'flake8' },
         cpp = { 'cpplint' },
-        c = { 'cpplint' },
+        c = { 'clangtidy' },
+      }
+
+      lint.linters.clangtidy = {
+        cmd = 'clang-tidy',
+        stdin = false,
+        args = { '%filepath' },
+        stream = 'stdout',
+        parser = require('lint.parser').from_pattern('([^:]+):(\\d+):(\\d+): (%w+): (.+)', { 'filename', 'lnum', 'col', 'severity', 'message' }, {
+          source = 'clang-tidy',
+          severity = {
+            warning = vim.diagnostic.severity.WARN,
+            error = vim.diagnostic.severity.ERROR,
+            note = vim.diagnostic.severity.INFO,
+          },
+        }),
       }
 
       -- To allow other plugins to add linters to require('lint').linters_by_ft,
