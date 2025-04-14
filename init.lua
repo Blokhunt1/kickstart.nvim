@@ -91,7 +91,7 @@ vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
 -- Set to true if you have a Nerd Font installed and selected in the terminal
-vim.g.have_nerd_font = false
+vim.g.have_nerd_font = true
 
 -- [[ Setting options ]]
 -- See `:help vim.opt`
@@ -222,6 +222,25 @@ if vim.fn.argc() == 0 then
 end
 
 -- user own created functions
+vim.api.nvim_create_autocmd({ 'BufEnter' }, {
+  callback = function(event)
+    local title = 'nvim'
+    if event.file ~= '' then
+      title = string.format('nvim: %s', vim.fs.basename(event.file))
+    end
+
+    vim.fn.system { 'wezterm', 'cli', 'set-tab-title', title }
+  end,
+})
+
+vim.api.nvim_create_autocmd({ 'VimLeave' }, {
+  callback = function()
+    -- Setting title to empty string causes wezterm to revert to its
+    -- default behavior of setting the tab title automatically
+    vim.fn.system { 'wezterm', 'cli', 'set-tab-title', '' }
+  end,
+})
+
 vim.api.nvim_create_user_command('NeoTreeBuildC', function()
   -- Get the path of the current Neo-tree node
   local state = require('neo-tree.sources.manager').get_state 'filesystem'
