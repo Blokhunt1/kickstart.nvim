@@ -319,7 +319,7 @@ vim.api.nvim_create_user_command('NeoTreeBuildC', function()
   end
 
   if file:match '%.ps1$' then
-    local cmd = string.format('powershell "%s"', file)
+    local cmd = string.format('pwsh.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File %q', file)
     vim.notify('Running ', vim.log.levels.INFO)
     vim.cmd('split | terminal ' .. cmd)
   end
