@@ -839,6 +839,9 @@ require('lazy').setup({
       --  - capabilities (table): Override fields in capabilities. Can be used to disable certain LSP features.
       --  - settings (table): Override the default settings passed when initializing the server.
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
+
+      local mason_path = vim.fn.stdpath 'data' .. '/mason/packages/powershell-editor-services'
+      vim.lsp.set_log_level 'debug'
       local servers = {
         clangd = {},
         bashls = {},
@@ -846,10 +849,35 @@ require('lazy').setup({
         pyright = {},
         jsonls = {},
         powershell_es = {
+          cmd = {
+            'pwsh',
+            '-NoLogo',
+            '-NoProfile',
+            '-Command',
+            -- point at Start-EditorServices.ps1 and crank its log level way up
+            string.format(
+              "& '%s/PowerShellEditorServices/Start-EditorServices.ps1' "
+                .. "-BundledModulesPath '%s' "
+                .. "-LogPath '%s/powershell_es.log' "
+                .. "-SessionDetailsPath '%s/powershell_es.session.json' "
+                .. '-Stdio '
+                .. '-LogLevel Diagnostic',
+              mason_path, -- where the module is installed
+              mason_path, -- bundled modules path
+              vim.fn.stdpath 'cache',
+              vim.fn.stdpath 'cache'
+            ),
+          },
           settings = {
             powershell = {
               analysis = {
                 enable = true,
+                enableFileDiagnostics = true,
+              },
+              -- Optional: enable the built‑in code‑formatter
+              codeFormatting = {
+                autoCorrectAliases = true,
+                preset = 'OTBS', -- One True Brace Style
               },
             },
           },

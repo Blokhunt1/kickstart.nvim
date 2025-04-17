@@ -34,7 +34,7 @@ import subprocess
 
 # Run PowerShell to get the actual $PROFILE path
 result = subprocess.run(
-    ["powershell", "-NoProfile", "-Command", "$PROFILE"],
+    ["pwsh.exe", "-NoProfile", "-Command", "$PROFILE"],
     capture_output=True,
     text=True
 )
