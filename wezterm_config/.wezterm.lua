@@ -68,7 +68,7 @@ wezterm.on('gui-startup', function(window)
 end)
 
 -- Spawn a fish shell in login mode
-config.default_prog = { 'powershell.exe' }
+config.default_prog = { 'pwsh.exe' }
 
 --- Check if a file or directory exists in this path
 function exists(file)
@@ -101,8 +101,8 @@ end
 -- inside your wezterm.lua
 config.launch_menu = {
   {
-    label = 'Admin PowerShell',
-    args = { 'powershell', '-NoExit', '-Command', 'Start-Process powershell -Verb runAs' },
+    label = 'PowerShell (Admin)',
+    args = { 'pwsh.exe' },
   },
 }
 
