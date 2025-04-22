@@ -8,7 +8,7 @@ local config = wezterm.config_builder()
 config.font_dirs = {
   os.getenv 'LOCALAPPDATA' .. '\\nvim\\wezterm_config\\fonts',
 }
-config.font = wezterm.font '0xProto Nerd Font Mono'
+config.font = wezterm.font 'OpenDyslexicM Nerd Font Mono'
 
 config.color_scheme = 'Catppuccin Mocha'
 
